@@ -1,0 +1,304 @@
+
+<!--
+ Copyright 2016 The COMPEIT Consortium
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+
+{% extends "components/base.html" %}
+
+{% block styles %}
+  <link href="{{ url_for('static', filename='vendor/lumen.min.css') }}" rel="stylesheet" media="screen">
+  <link href="{{ url_for('static', filename='vendor/sticky-footer-navbar.css') }}" rel="stylesheet" media="screen">
+  <link href="{{ url_for('static', filename='vendor/kurento/kurento.css') }}" rel="stylesheet" media="screen">
+  <link href="{{ url_for('static', filename='vendor/demo-console/index.css') }}" rel="stylesheet" media="screen">
+
+{% endblock %}
+
+
+{% block title %}Simple kurento example{% endblock %}
+
+{% block page_content %}
+<div class="container">
+  <div class="row">
+    <div id="users" class="col-md-9">
+    </div>
+
+    <div id="shared_chat" class="col-md-3">
+      <div id="shared_name" class="row">Chat window</div>
+      <div class="row">
+          <textarea id="room_chat_window" class="form-control"  style="font-size:85%;" cols="80" rows="20" readonly="1">{% for c in chat %}
+[{{ c.name }}]: {{ c.text }}{% endfor %}
+</textarea>
+      </div>
+      <div id="shared_component" class="row">
+          <input id="room_chat" type="textarea" class="form-control" name="room_chat" placeholder="Message">
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <label class="control-label" for="console">Console</label><br><br>
+      <div id="console" class="democonsole">
+        <ul></ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock page_content %}
+
+{% block scripts %}
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='vendor/adapter.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='vendor/kurento/kurento-utils.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='vendor/demo-console/index.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/connection_agent.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/chat_agent.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/kurento_agent.js') }}"></script>
+
+<script type="text/javascript" charset="utf-8">
+  var roomAgent = null;
+  var myVideo = null;
+  var users = {};
+  var myMedia = false;
+  var audioMuted = true;
+  var conLQ = [160, 100]
+  var conMQ = [320, 200]
+  var conHQ = [640, 400]
+  var constraints = conLQ;
+
+  function room_joined() {
+    $('#users').append('<div id="my_id" class="col-md-3 pull-left"  style="display:none"><div class="row">'+connectionAgent.getName()+'</div><div id="video_div"><video id="my_video" autoplay height="120" width="160" poster="/static/img/webrtc.png"></video></div><div class="btn-group" role="group"><button id="send" class="btn btn-default btn-sm">Send</button><button id="audio" class="btn btn-default btn-sm" disabled="disabled">Mute</button><button id="stop" disabled="disabled" class="btn btn-default btn-sm">Stop</button></div><div class="btn-group" role="group"><button id="video_lq" type="button" class="btn btn-default btn-sm active video_q">LQ</button><button id="video_mq" type="button" class="btn btn-default btn-sm video_q">MQ</button><button id="video_hq" type="button" class="btn btn-default btn-sm video_q">HQ</button></div></div>');
+    $('#my_id').fadeIn();
+
+    myVideo = document.getElementById('my_video');
+    $('#send').click(function(event) {
+      kurentoAgent.startLocal(myVideo, constraints[0], constraints[1], 30);
+      $('#send').attr('disabled', 'disabled');
+      $('#audio').removeAttr('disabled');
+      $('#stop').removeAttr('disabled');
+      $('.video_q').attr('disabled', 'disabled');
+    });
+    $('#stop').click(function(event) {
+      kurentoAgent.stopLocal();
+      myMedia = false;
+      $('#send').removeAttr('disabled');
+      $('#audio').attr('disabled', 'disabled');
+      $('#stop').attr('disabled', 'disabled');
+      $('.video_q').removeAttr('disabled');
+    });
+    $('#audio').click(function(event) {
+      if (myMedia) {
+        if (audioMuted) {
+          audioMuted = false;
+          $('#audio').html('Mute');
+          kurentoAgent.unmuteAudioLocal();
+        } else {
+          audioMuted = true;
+          $('#audio').html('Unmute');
+          kurentoAgent.muteAudioLocal();
+        }
+      }
+    });
+    $('#video_lq').click(function(event) {
+      $(".video_q").removeClass('active');
+      $('#video_lq').addClass('active')
+      $('#my_id').addClass('col-md-3');
+      $('#my_id').removeClass('col-md-4');
+      $('#my_id').removeClass('col-md-5');
+      $('#my_video').attr({
+        width: '160',
+        height: '120'
+      });
+      $('#video_div').attr('height','125');
+      constraints = conLQ;
+    });
+    $('#video_mq').click(function(event) {
+      $(".video_q").removeClass('active');
+      $('#video_mq').addClass('active');
+      $('#my_id').addClass('col-md-4');
+      $('#my_id').removeClass('col-md-3');
+      $('#my_id').removeClass('col-md-5');
+      $('#my_video').attr({
+        width: '240',
+        height: '180'
+      });
+      $('#video_div').attr('height','185');
+      constraints = conMQ;
+    });
+    $('#video_hq').click(function(event) {
+      $(".video_q").removeClass('active');
+      $('#video_hq').addClass('active')
+      $('#my_id').addClass('col-md-5');
+      $('#my_id').removeClass('col-md-3');
+      $('#my_id').removeClass('col-md-4');
+      $('#my_video').attr({
+        width: '320',
+        height: '240'
+      });
+      $('#video_div').attr('height','245');
+      constraints = conHQ;
+    });
+  }
+
+  function user_joined(user_id, user_name) {
+    $('#users').append('<div id="user_'+user_id+'" class="col-md-3 pull-left"  style="display:none"><div class="row">'+user_name+'</div><div id="video_div_"'+user_id+'"><video id="video_'+user_id+'" height="125" width="164" autoplay poster="/static/img/webrtc.png"></video></div><div id="control_' + user_id + '""></div><div id="audio_'+user_id+'" class="row">unmuted</div><div class="row">User chat window</div><div class="row"><textarea id="user_chat_'+user_id+'" class="form-control"  style="font-size:85%;" cols="80" rows="10" readonly="1"></textarea></div><div class="row"><input id="user_chat_input_'+user_id+'" user_id="'+user_id+'" type="textarea" class="form-control" placeholder="Message"></div></div></div>');
+
+    $('#user_chat_input_'+user_id).keyup(function(event) {
+      if (event.keyCode == 13) {
+        chatAgent.userMessage($(this).attr('user_id'), $(this).val())
+        $('#user_chat_'+$(this).attr('user_id')).append('->'+$(this).val()+'\n')
+        $(this).val('');
+      }
+    });
+    $('#user_'+user_id).fadeIn();
+    users[user_id] = { 'name': user_name };
+    if (myMedia) {
+      kurentoAgent.offerUserMedia(user_id);
+    }
+  }
+
+  function user_left(user_id) {
+    $('#user_'+user_id).fadeOut(function() {
+      $(this).remove();
+    });
+    delete users[user_id];
+  }
+
+  function local_media(width, height) {
+    console.log('local media available: '+width+'x'+height);
+    myMedia = true;
+    audioMuted = false;
+
+    for (var uid in users) {
+      kurentoAgent.offerUserMedia(uid);
+    }
+  }
+
+  function remote_media(user_id, width, height) {
+    console.log('remote media available '+user_id);
+    uid_tag = '#user_'+user_id;
+    video_tag = '#video_'+user_id;
+    videodiv_tag = '#video_div_'+user_id;
+    if (width) {
+      if (width > 320) {
+        // HQ
+        $(uid_tag).addClass('col-md-5');
+        $(uid_tag).removeClass('col-md-3');
+        $(uid_tag).removeClass('col-md-4');
+        $(video_tag).attr({
+          width: '640',
+          height: '480'
+        });
+        $(video_tag).attr('height','245');
+      } else if (width > 160) {
+        // MQ
+        $(uid_tag).addClass('col-md-4');
+        $(uid_tag).removeClass('col-md-3');
+        $(uid_tag).removeClass('col-md-5');
+        $(video_tag).attr({
+          width: '320',
+          height: '240'
+        });
+        $(videodiv_tag).attr('height','185');
+
+      } else {
+        // LQ
+        $(uid_tag).addClass('col-md-3');
+        $(uid_tag).removeClass('col-md-4');
+        $(uid_tag).removeClass('col-md-5');
+        $(video_tag).attr({
+          width: '160',
+          height: '120'
+        });
+        $(videodiv_tag).attr('height','125');
+      }
+    }
+
+    var remoteVideo = document.getElementById('video_'+user_id);
+    if (remoteVideo) {
+      kurentoAgent.connectRemote(remoteVideo, user_id);
+    }
+  }
+
+  function audio_change(user_id, state) {
+    console.log('user: '+user_id+' '+state);
+    $('#audio_'+user_id).html(state);
+  }
+
+  function remote_stopped(user_id) {
+    console.log('remote stopped: '+user_id)
+  }
+
+  function event_cb(evt, msg) {
+    switch (evt) {
+    case 'connected':
+      break;
+    case 'room_joined':
+      room_joined();
+      break;
+    case 'user_joined':
+      if (!(msg.user.id in users)) {
+        user_joined(msg.user.id, msg.user.name)
+      }
+      break;
+    case 'user_left':
+      if (msg.user.id in users) {
+        user_left(msg.user.id)
+      }
+      break;
+    default:
+      console.log('unhandled event: '+evt)
+    }
+  }
+
+  $(document).ready(function(){
+    console = new Console();
+    console.log('lets go!');
+
+    connectionAgent.init({{ room.id }})
+    connectionAgent.onEvent(event_cb);
+    chatAgent.init(connectionAgent);
+    kurentoAgent.init(connectionAgent);
+    kurentoAgent.onLocalMedia(local_media);
+    kurentoAgent.onRemoteMediaOffer(remote_media);
+    kurentoAgent.onRemoteMediaAudioChange(audio_change);
+    kurentoAgent.onRemoteSenderStopped(remote_stopped)
+
+    chatAgent.onServerMessage(function(msg) {
+      var msgtext = 'Server says '+msg+'\n';
+      $('#room_chat_window').append(msgtext);
+    });
+    chatAgent.onRoomMessage(function(user_name, msg) {
+      var msgtext = '['+user_name+']: '+msg+'\n';
+      $('#room_chat_window').append(msgtext);
+    });
+    chatAgent.onUserMessage(function(user_id, msg) {
+      console.log('chat from '+user_id+' '+msg);
+      $('#user_chat_'+user_id).append('<-'+msg+'\n')
+    });
+
+    connectionAgent.start();
+
+    $('#room_chat').keyup(function(event) {
+      if (event.keyCode == 13) {
+        chatAgent.roomMessage($('#room_chat').val());
+        $('#room_chat').val('');
+      }
+    });
+  });
+</script>
+{% endblock scripts %}

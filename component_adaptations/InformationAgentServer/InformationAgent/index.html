@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+	<title>COMPEIT: InformationAgent v0.1</title>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="author" content="Harold T Nefs, Iulia Lefter, Tjerk de Greef">
+    <meta name="keywords" content="COMPEIT, Mocktopus, Information Agent">
+    <meta name="description" content="Mocktopus: Information Agent">
+    <meta name="copyright" content="TU Delft/COMPEIT/authors(2014). All rights reserved.">
+ 
+    <link rel="icon"  type="image/gif" href="../IMG/favicon.ico" sizes="32x32" >
+  
+  	<script type="text/javascript" src="JS/main.js"></script>  
+    <script type="text/javascript" src="../VirtualCamera/JS/VirtualCamera.js"></script>
+    <script type="text/javascript" src="../InformationAgent/JS/InformationAgent.js"></script>
+    <script type="text/javascript" src="../ConnectionAgent/JS/ConnectionAgent.js"></script>
+	
+	<script type="text/javascript" src="../JS/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="../jquery-ui-1.10.4.custom/js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
+
+	<script type="text/javascript" src="../JS/adapter.js"></script>
+    <script type="text/javascript" src="../JS/socket.io.js"></script>
+    
+    <script type="text/javascript" src="JS/recorder.js"> </script>
+    
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDDTbgzDD35gePUqEuLhva2_MPHkWrNoqg"></script>
+  
+    <script src="JS/jquery.ui.affectbutton.js"></script>
+    
+ 	<link rel="stylesheet" type="text/css" href="../CSS/compeit.css">
+    <link rel="stylesheet" type="text/css" href="../jquery-ui-1.10.4.custom/css/no-theme/jquery-ui-1.10.4.custom.css" >    
+    <link rel="stylesheet" href="css/jquery.mobile-1.0.1.min.css" />
+</head>
+
+
+<body>
+	<div id="header" >
+		<H1>Information Agent v0.1</H1>		
+    </div>
+    
+	<div id = "videoContainer" class = "ui-widget" align ="left"></div> 
+   
+   	<div id = "container"  class= "ui-widget" align ="center">
+    	<!--MyMood-->
+    	<div  id = "myMood">
+        	<h2>My current mood</h2>
+            <div id='affectButton' data-role="page" style="height: 200px; min-height: 200px !important; width: 50%; position : relative">
+			  	<div data-role="content" style="width:300px; height:200px; margin:auto auto;">
+				  	<div style="padding:0; width:262px; height:100px; margin:0 ;">
+					  	<canvas id="affect" width="100px" height="100px" style="border:0; padding:0;"></canvas>
+					  	<div data-role="fieldcontain">
+                          <label for="pleasure">pleased</label>
+                          <input id="pleasure" type="number" value="0" min="-1" max="1" step="0.05" size="4" />
+                          <label for="arousal">aroused</label>
+                          <input id="arousal" type="number" value="0" min="-1" max="1" step="0.05" />
+                          <label for="dominance">dominant</label>
+                          <input id="dominance" type="number" value="0" min="-1" max="1" step="0.05" />
+                         </div>
+                      </div>
+			  </div> <!--  /content -->
+			</div> <!-- /affectButton -->
+            
+            
+         <!-- Sound recorder -->
+         <audio id = "audioplayer"; controls></audio>
+         <fieldset>
+         	<legend>RECORD AUDIO</legend>
+         	<input onclick="takeSnapSoundNow()" type="button" value="make snapSound" />
+        	<input onclick="playLastSnapSoundNow()" type="button" value="play last recording" />
+         </fieldset>
+      
+            
+            
+        </div> 
+        <!--/myMood-->
+       	
+       	<!--MyActivities-->
+      	<div id="myActivities"> 
+            <h2>My current activity</h2>
+            <img id="currentActivityIcon" src="../IMG/activity/play.png" width="150px"><br/>
+            <img src="../IMG/activity/play.png" width="40" onClick = "swap(event)">
+            <img src="../IMG/activity/awake.png" width="40" onClick = "swap(event)">
+            <img src="../IMG/activity/doc.png" width="40" onClick = "swap(event)">
+            <img src="../IMG/activity/eat.png" width="40" onClick = "swap(event)">
+            <img src="../IMG/activity/parents.png" width="40" onClick = "swap(event)">
+            <img src="../IMG/activity/shower.png" width="40" onClick = "swap(event)">
+            <img src="../IMG/activity/sleep.png" width="40" onClick = "swap(event)">
+            <img src="../IMG/activity/study.png" width="40" onClick = "swap(event)">
+		</div>
+        <!--/MyActivities-->
+
+        <!--mySnapshots-->
+        <div id="mySnapShots">
+            <h2>Browse my screenshots</h2>
+            <div id="snapShotBrowser"></div>
+            <fieldset>
+         		<legend>TAKE SNAPSHOT</legend>
+         		<input onclick="takeSnapShotNow()" type="button" value="Click!" />
+         	</fieldset>
+        </div>
+        <!--/mySnapshots-->
+        
+        
+		<!--my Location-->
+        <div id = "myLocation">
+         	<h2>My location</h2>
+         	<div id="map-canvas" style = "width: 50%; height: 200px"></div>
+        </div>
+        <!--/myLocation-->
+    
+        <div id = "myAgenda">
+            <h2>My agenda</h2>
+        <iframe src="https://www.google.com/calendar/embed?mode=WEEK&amp;height=400&amp;wkst=2&amp;hl=en&amp;bgcolor=%2300cccc&amp;src=o6pj0degh2om2dlbpfsbdju83o%40group.calendar.google.com&amp;color=%235229A3&amp;ctz=Europe%2FAmsterdam" style=" border-width:0 " width="600" height="400" frameborder="0" scrolling="no"></iframe>
+
+            </div>
+            <style>
+			
+							
+			</style>
+  		<!--MyPrivacySettings-->
+        <div id="privacySettings" >
+            <h2>Who can see my stuff? </h2>
+            <table  align="center" border="0" cellspacing="0" cellpadding="2">
+                <tr>
+                    <td width="100"></td>
+                    <td width="100">My agenda</td>
+                    <td width="100">My location</td>
+                    <td width="100">My mood</td>
+                    <td width="100">My photos</td>
+                </tr>
+                <tr>
+                    <td>Family</td>
+                    <td><input type = "checkbox" class = "privacy" id = "family.myAgenda"/><label  for = "family.myAgenda" class ="privacy"> </label></td>
+                    <td><input type = "checkbox" class = "privacy" id = "family.myLocation"/><label  for = "family.myLocation" class ="privacy"> </label></td>
+                    <td><input type = "checkbox" class = "privacy" id = "family.myMood"/><label  for = "family.myMood" class ="privacy"> </label></td>
+                    <td><input type = "checkbox" class = "privacy" id = "family.myPhotos"/><label  for = "family.myPhotos" class ="privacy"> </label></td>
+              </tr>
+              <tr>
+                    <td>Friends</td>
+                    <td><input type = "checkbox" class = "privacy" id = "friends.myAgenda"/><label  for = "friends.myAgenda" class ="privacy"> </label></td>
+                    <td><input type = "checkbox" class = "privacy" id = "friends.myLocation"/><label  for = "friends.myLocation" class ="privacy"> </label></td>
+                    <td><input type = "checkbox" class = "privacy" id = "friends.myMood"/><label  for = "friends.myMood" class ="privacy"> </label></td>
+                    <td><input type = "checkbox" class = "privacy" id = "friends.myPhotos"/><label  for = "friends.myPhotos" class ="privacy"> </label></td>
+              </tr>
+              <tr>
+                    <td>Teachers</td>
+                    <td><input type = "checkbox" class = "privacy" id = "teachers.myAgenda"/><label  for = "teachers.myAgenda" class ="privacy"> </label></td>
+                    <td><input type = "checkbox" class = "privacy" id = "teachers.myLocation"/><label  for = "teachers.myLocation" class ="privacy"> </label></td>
+                    <td><input type = "checkbox" class = "privacy" id = "teachers.myMood"/><label  for = "teachers.myMood" class ="privacy"> </label></td>
+                    <td><input type = "checkbox" class = "privacy" id = "teachers.myPhotos"/><label  for = "teachers.myPhotos" class ="privacy"> </label></td>
+              </tr>
+              <tr>
+                    <td>Students</td>
+                    <td><input type = "checkbox" class = "privacy" id = "students.myAgenda"/><label  for = "students.myAgenda" class ="privacy"> </label></td>
+                    <td><input type = "checkbox" class = "privacy" id = "students.myLocation"/><label  for = "students.myLocation" class ="privacy"> </label></td>
+                    <td><input type = "checkbox" class = "privacy" id = "students.myMood"/><label  for = "students.myMood" class ="privacy"> </label></td>
+                    <td><input type = "checkbox" class = "privacy" id = "students.myPhotos"/><label  for = "students.myPhotos" class ="privacy"> </label></td>
+                </tr>
+                <tr>
+                    <td>Medical staff</td>
+                    <td><input type = "checkbox" class = "privacy" id = "medstaff.myAgenda"/><label  for = "medstaff.myAgenda" class ="privacy"> </label></td>
+                    <td><input type = "checkbox" class = "privacy" id = "medstaff.myLocation"/><label  for = "medstaff.myLocation" class ="privacy"> </label></td>
+                    <td><input type = "checkbox" class = "privacy" id = "medstaff.myMood"/><label  for = "medstaff.myMood" class ="privacy"> </label></td>
+                    <td><input type = "checkbox" class = "privacy" id = "medstaff.myPhotos"/><label  for = "medstaff.myPhotos" class ="privacy"> </label></td>
+              </tr>
+            </table>
+        </div>
+        <!--/MyPrivacySettings-->
+    
+        <div id = "myFriends" >
+            <h2>Who's in my Circles</h2>
+            <table  align="center" border="0" cellspacing="0" cellpadding="2">
+            <tr>
+            	<td width="150">In<b> Family </b> circle</td>
+              	<td width="10"></td>
+                <td width="350" id = "familyCircle"></td> <td style="font-weight: bold; text-align: left;">   </td> 
+            <tr>   
+            	<td width="150">In <b> Friends </b> circle</td>
+                <td width="10"></td>
+                <td width="350" id = "friendsCircle"></td>  <td style="font-weight: bold; text-align: left;">   </td> 
+            </tr>
+            <tr>  
+            	<td width="150">In <b> Teachers </b> circle</td>   
+                <td width="10"></td>
+                <td width="350" id = "teachersCircle"></td> <td style="font-weight: bold; text-align: left;">   </td>       
+            </tr>
+            <tr> 
+            	<td width="150">In <b> students </b> circle</td>   
+                <td width="10"></td>
+                <td width="350" id = "studentsCircle"></td> <td style="font-weight: bold; text-align: left;">   </td>  
+            </tr>
+            <tr>  
+            	<td width="150">In <b> Medical Staff </b> circle</td>   
+                <td width="10"></td>
+                <td width="350" id = "medstaffCircle"><td style="font-weight: bold; text-align: left;">   </td>      
+            </tr>
+            </table>
+        </div>
+    
+    	<!--My User Info-->
+        <div id = "myUserInfo" >
+            <h2>My user info</h2>
+            <table border="solid 1pt" align = "left">
+             	<tr>
+                	<td>user name</td>	<td>testing</td>
+                </tr>
+                <tr>
+                    <td>Current public IP address</td>	<td id ="ip-address"></td>
+                </tr>
+                 <tr>
+                    <td>Current location</td><td id ="location"></td>
+                </tr>
+                <tr>
+                	<td>--</td>	<td>--</td>
+                </tr>
+            </table>
+        </div>
+        <!--/My User Info-->
+	
+    </div> <!--end of Container-->
+
+ 
+</body>
+</html> 
+
+
+
+<script type="text/javascript">
+	<!--overide these functions in the demo object-->
+	takeSnapSoundNow 		= function(){};
+	takeSnapShotNow 		= function(){};
+	playLastSnapSoundNow	= function(){};
+	changePrivacyHandler	= function(){};
+	
+	
+	<!--location--> 
+	var map, mapOptions;
+ function loadMap() {
+         mapOptions = {
+          center: new google.maps.LatLng(-34.397, 150.644),
+          zoom: 12
+        };
+         map = new google.maps.Map(document.getElementById("map-canvas"),
+            mapOptions);
+      }
+      google.maps.event.addDomListener(window, 'load', loadMap);
+   
+ 		<!--Activity selector-->
+     function swap(event) {
+         document.getElementById("currentActivityIcon").src = event.target.src;
+     };
+
+	$("input.privacy").click(function(){
+		changePrivacyHandler(this);
+	});
+
+ 	
+	
+	<!--General--> 
+     $(document).ready(function () {
+		var demo = new Demo();
+		
+		changePrivacyHandler 	= demo.changePrivacySetting;
+		takeSnapSoundNow 		= demo.takeSnapSoundNow;
+		takeSnapShotNow 		= demo.takeSnapShotNow;
+		playLastSnapSoundNow 	= demo.playLastSnapSoundNow;
+		
+		
+		$('#affectButton').find('#affect').affectbutton({
+		}).bind('affectchanged', function(e, a) {
+				// ... so we can update the input element of each component
+				$.each(a, function(c, v) {
+					$('#' + c).val(v);
+				});
+			});
+	 		
+		$('#affectButton').find('#pleasure, #arousal, #dominance').each(
+			function(index,elem){
+				$(this).bind('change', function(){
+					v= $(this).val();
+					
+					if (v) {
+						$('#affect').affectbutton('affect', this.id, v);
+						}
+					})
+				}
+			);
+	 	});
+		
+  	 $(function() {
+    			$( ".ui-widget-content" ).draggable({ containment: "#container", scroll: false });	
+				$( ".ui-widget-content" ).resizable({ aspectRatio: true });
+  			});
+
+</script>

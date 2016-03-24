@@ -1,0 +1,62 @@
+
+<!--
+ Copyright 2016 The COMPEIT Consortium
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Dashboard - Rooms{% endblock %}
+
+{% block page_content %}
+<h1>Welcome to COMPEIT Dashboard Lobby</h1>
+
+<div class="row">
+  <div class="col-md-12">
+    <table id="user_table" class="table table-bordered">
+      <caption><h3 class="pull-left">Available rooms</h3></caption>
+      <thead>
+        <tr>
+          <th>Room</th>
+          <th>Owner</th>
+          <th>Type</th>
+          <th class="text-center">Id</th>
+          <th class="text-center">Active Users</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for room in rooms %}
+        <tr {% if current_user.activeRoomId == room.id %}class="active"{% endif %}>
+          <td>
+            <a href="{{ url_for('main.room', roomId=room.id) }}">{{ room.name }}</a>
+          </td>
+          <td>
+            {% if room.ownerId %}
+            {{ User.query.filter_by(id=room.ownerId).first().name }}
+            {% endif %}
+          </td>
+          <td>
+            {{ room.component.name }}
+          </td>
+          <td class="text-center"><span class="badge">{{ room.id }}</span></td>
+          <td class="text-center"><span class="badge">{{ User.query.filter_by(activeRoomId=room.id).count() }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

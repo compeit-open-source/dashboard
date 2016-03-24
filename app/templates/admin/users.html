@@ -1,0 +1,133 @@
+
+<!--
+ Copyright 2016 The COMPEIT Consortium
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+
+{% extends "admin/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Users{% endblock %}
+{% block page_title %}Admin Users{% endblock %}
+
+{% block page_content %}
+<!-- Modal -->
+<div class="modal fade" id="admUser" tabindex="-1" role="dialog" aria-labelledby="admUserLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form class="form" method="post" role="form">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+          </button>
+          <h4 class="modal-title" id="admUserLabel">Add new user</h4>
+        </div>
+        <div class="modal-body">
+          {{ form.hidden_tag() }}
+          {{ wtf.form_errors(form, hiddens="only") }}
+
+          {% if form.errors %}
+          <div class="alert alert-danger" role="alert">
+            <ul class="errors">
+              {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+              {% for error in field_errors %}
+              <li>{{ form[field_name].label }}: {{ error }}</li>
+              {% endfor %}
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+          <div class="form-group ">
+            {{ form.name.label(class_='control-group') }}
+            {{ form.name(class_='form-control') }}
+          </div>
+          <div class="form-group">
+            {{ form.password.label(class_='control-group') }}
+            {{ form.password(class_='form-control') }}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button id="save_button" type="submit" class="btn btn-primary" formaction="{{ url_for('admin.add_user') }}">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Users<button class="btn btn-info btn-xs pull-right" onClick="add_user()"><span class="glyphicon glyphicon-plus pull-right"></span></button></h3>
+  </div>
+  <div class="panel-body">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td>
+            {% if user.id == current_user.id %}
+            <a href="#" onClick="edit_user('{{ user.id }}', '{{ user.email }}', '{{ user.name }}'')">
+              {{ user.name }}
+            </a>
+            {% else %}
+            {{ user.name }}
+            {% endif %}
+          </td>
+          <td>{{ user.email }}</td>
+          <td class="text-right">
+            {% if user.id == current_user.id %}
+            <a href="{{ url_for('admin.delete_user', userId=user.id) }}" type="button" class="btn btn-xs btn-danger">
+              <span class="glyphicon glyphicon-remove" aria-hidden="true">
+            </a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+  function edit_user(id, email, name) {
+    $('#admUserLabel').html('Edit user');
+    $('#email').val(email);
+    $('#name').val(name);
+    $('#password').val('');
+    $('#save_button').attr('formaction', "{{ url_for('admin.edit_user', userId=id) }}"+id);
+
+    $('#admUser').modal();
+  }
+
+  function add_user() {
+    $('#admUserLabel').html('Add new user');
+    $('#email').val('');
+    $('#name').val('');
+    $('#password').val('');
+    $('#save_button').attr('formaction', "{{ url_for('admin.add_user') }}");
+
+    $('#admUser').modal();
+  }
+</script>
+{% endblock %}

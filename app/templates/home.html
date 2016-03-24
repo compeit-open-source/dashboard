@@ -1,0 +1,225 @@
+
+<!--
+ Copyright 2016 The COMPEIT Consortium
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <!-- Bootstrap -->
+    <link href="{{ url_for('static', filename='vendor/lumen.min.css') }}" rel="stylesheet" media="screen">
+    <link href="{{ url_for('static', filename='vendor/sticky-footer-navbar.css') }}" rel="stylesheet" media="screen">
+    <link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet" media="screen">
+ {% endblock %}
+
+{% block title %}COMPEIT - Home{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-default" role="navigation">
+  <div class="navbar-header">
+    <div class="navbar-brand" href="/">
+        <img style="margin-top:-6px; height:32px; width:auto;" src="/static/img/COMPEIT-logo-CMYK.svg"></img>
+    </div>
+  </div>
+
+  <div class="navbar" style="position: absolute; width: 100%;left: 0; text-align: center; margin: auto;">
+    <h3 style="color: DarkSlateGray; margin-top: 13px;">Welcome, {{ current_user.name }}!</h3>
+  </div>
+
+  <div class="collapse navbar-collapse" id="mainNav">
+    <ul class="nav navbar-nav navbar-right">
+      <li>
+        <a href="{{ url_for('auth.logout') }}">
+          Log out
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  {% for category, message in get_flashed_messages(with_categories=true) %}
+  <div class="alert alert-warning">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    {% if category=='error' %}
+    <strong>
+      {% endif %}
+      {{ message }}
+      {% if category=='error' %}
+    </strong>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Rooms</h3>
+        </div>
+        <div class="panel-body">
+          <table class="table">
+            <tr><th></th><th>Name</th><th>Owner</th></tr>
+            {% set c_id = 0 %}
+            {% for room in my_rooms %}
+            <tr>
+              <td>
+                {% if room.componentId != c_id %}
+                <b>{{ room.component.name }}</b>
+                {% set c_id = room.componentId %}
+                {% endif %}
+              </td>
+              <td>
+                <a href="{{ url_for('main.room', roomId=room.id) }}">{{ room.name }}</a>
+              </td>
+              <td>Me</td>
+            </tr>
+            {% endfor %}
+            {% set c_id = 0 %}
+            {% for room in rooms %}
+            <tr>
+              <td>
+                {% if room.componentId != c_id %}
+                <b>{{ room.component.name }}</b>
+                {% set c_id = room.componentId %}
+                {% endif %}
+              </td>
+              <td>
+                <a href="{{ url_for('main.room', roomId=room.id) }}">{{ room.name }}</a>
+              </td>
+              <td>
+                {% if room.ownerId %}
+                {{ User.query.filter_by(id=room.ownerId).first().name }}
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">My Objects</h3>
+        </div>
+        <div class="panel-body">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Input</th>
+              <th>Output</th>
+              <th>Value</th>
+            </tr>
+            </thead>
+            <tbody>
+              {% for object in current_user.objects %}
+              <tr>
+                <td>{{ object.name }}</td>
+                <td>{{ object.description }}</td>
+                {% if object.inputs.all()|length > 0 %}
+                {% for input in object.inputs.all() %}
+                  <td>{{ input.name }}</td>
+                {% endfor %}
+                {% else %}
+                  <td></td>
+                {% endif %}
+                {% if object.outputs.all()|length > 0 %}
+                {% for output in object.outputs.all() %}
+                {% if loop.first %}
+                <td>{{ output.name }}</td><td>{{ output.value }}</td></tr>
+                {% else %}
+                <td></td><td></td><td></td>
+                <td>{{ output.name }}</td><td>{{ output.value }}</td></tr>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                  <td></td><td></td></tr>
+                {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">User</h3>
+      </div>
+      <div class="panel-body">
+        <img src="{{ avatar_url }}" height="100px" width="100px">
+      </div>
+    </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Administrate</h3>
+        </div>
+        <div class="panel-body">
+          <table class="table">
+            <tr><td>
+              <form class="form form-inline" action="{{ url_for('main.upload_avatar') }}" enctype="multipart/form-data" method="post" role="form">
+                <div class="form-group">
+                  <div class="input-group">
+                    <label for="upload_avatar">Avatar</label>
+                    <input id="upload_avatar" type="file" name="avatar">
+                  </div>
+                  <p>choose an avatar</p>
+                </div>
+                <button type="submit" class="btn btn-primary pull-right">Upload file</button>
+              </form>
+            </td></tr>
+            <tr><td>
+              <form class="form form-inline" action="{{ url_for('main.set_room') }}" method="post" role="form">
+                {{ form.hidden_tag() }}
+                {{ wtf.form_errors(form, hiddens="only") }}
+
+                {% if form.errors %}
+                <div class="alert alert-danger" role="alert">
+                  <ul class="errors">
+                    {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+                    {% for error in field_errors %}
+                    <li>{{ form[field_name].label }}: {{ error }}</li>
+                    {% endfor %}
+                    {% endfor %}
+                  </ul>
+                </div>
+                {% endif %}
+                <div class="form-group">
+                  <label class="control-label" for="selectRoom">Default Room</label>
+                  {{ form.selectRoom(class='form-control', onChange='this.form.submit()') }}
+                </div>
+              </form>
+            </td></tr>
+            <tr><td><a href="{{ url_for('admin.circles') }}">Circles</a></td></tr>
+            <tr><td><a href="{{ url_for('admin.rooms') }}">Rooms</a></td></tr>
+            <tr><td><a href="{{ url_for('admin.objects') }}">Objects</a></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p class="text-muted">&copy;2014-2015 COMPEIT Consortium, <a href="http://www.compeit.eu">www.compeit.eu</a></p>
+  </div>
+</footer>
+{% endblock %}

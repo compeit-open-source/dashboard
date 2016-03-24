@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>COMPEIT: Information Agent v0.01</title>
+      
+	<script type="text/javascript" src="../JS/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="../jquery-ui-1.10.4.custom/js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
+	<script type="text/javascript" src="../JS/Kinect-1.8.0.js"></script>
+	<script type="text/javascript" src="../JS/adapter.js"></script>
+    <script type="text/javascript" src="../JS/socket.io.js"></script>
+    <script type="text/javascript" src="../ConnectionAgent/JS/ConnectionAgent.js"></script>
+	<script type="text/javascript" src="JS/InformationAgent.js"></script>
+    <script type="text/javascript" src="JS/main.js"></script>
+ 
+    <link rel="icon"  type="image/gif" href="../IMG/favicon.ico" sizes="32x32" >
+    
+    <link rel="stylesheet" type="text/css" href="../jquery-ui-1.10.4.custom/css/no-theme/jquery-ui-1.10.4.custom.css" > 
+    <link rel="stylesheet" type="text/css" href="../CSS/compeit.css">
+    <link rel="stylesheet" type="text/css" href="../CSS/kinect-1.8.0.css" />
+</head>
+
+
+
+<body>
+	<div id="header" >
+		<H1>Information Agent v0.01</H1>		
+    </div>
+	<div id = "container" class= "ui-widget">
+    	<div id = "videoContainer" class = "ui-widget-content" align ="left"></div>
+		<div id = "content" class = "ui-widget-content"> 
+        	<img id="backgroundImg" src="../IMG/agentp.jpg" width="640px" height="480px" />
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script type="text/javascript">
+     	$(document).ready(function () {
+		 	initialize();
+		 	});
+				
+  		$(function() {
+    			$( ".ui-widget-content" ).draggable({ containment: "#container", scroll: false });	
+				$( ".ui-widget-content" ).resizable({ aspectRatio: true });
+  			});
+    </script>

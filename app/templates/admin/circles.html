@@ -1,0 +1,142 @@
+
+<!--
+ Copyright 2016 The COMPEIT Consortium
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+ 
+{% extends "admin/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Circles{% endblock %}
+{% block page_title %}Admin Circles{% endblock %}
+
+{% block page_content %}
+<!-- Modal -->
+<div class="modal fade" id="addCircle" tabindex="-1" role="dialog" aria-labelledby="addCircleLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form class="form" method="post" role="form">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+          </button>
+          <h4 class="modal-title" id="addCircleLabel">Add new circle</h4>
+        </div>
+        <div class="modal-body">
+          {{ form.hidden_tag() }}
+          {{ wtf.form_errors(form, hiddens="only") }}
+
+          {% if form.errors %}
+          <div class="alert alert-danger" role="alert">
+            <ul class="errors">
+              {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+              {% for error in field_errors %}
+              <li>{{ form[field_name].label }}: {{ error }}</li>
+              {% endfor %}
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+          <div class="form-group ">
+            {{ form.name.label(class_='control-label') }}
+            {{ form.name(class_='form-control') }}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button id="save_button" type="submit" class="btn btn-primary" formaction="{{ url_for('admin.add_circle') }}">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="panel panel-default col-md-12">
+    <div class="panel-heading">
+      <h3 class="panel-title">Circles<button class="btn btn-info btn-xs pull-right" onClick="add_circle()"><span class="glyphicon glyphicon-plus pull-right"></span></button></h3>
+    </div>
+    <div class="panel-body">
+      <table class="table table-striped">
+        <thead>
+          <tr><th>Name</th></tr><th></th></tr>
+        </thead>
+        <tbody>
+         {% for circle in circles %}
+         <tr>
+          <td>{{ circle.name }}</td>
+           <td class="text-right">
+            <a href="{{ url_for('admin.delete_circle', circleId=circle.id) }}" type="button" class="btn btn-xs btn-danger">
+              <span class="glyphicon glyphicon-remove" aria-hidden="true">
+            </a>
+          </td>
+         {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Circle Members</h3>
+  </div>
+  <div class="panel-body">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Member</th>
+          {% for circle in circles %}
+          <th class="text-center">{{ circle.name }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+          {% for uc in members %}
+          <tr>
+            {% for ucm in uc %}
+            {% if loop.first %}
+            <td>{{ ucm }}</td>
+            {% else %}
+            <td class="text-center">
+              {% if ucm[2] %}
+              <a href="{{ url_for('admin.delete_circle_member', circleId=ucm[0], userId=ucm[1]) }}">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true">
+              {% else %}
+              <a href="{{ url_for('admin.add_circle_member', circleId=ucm[0], userId=ucm[1]) }}">
+                <span class="glyphicon glyphicon-ban-circle" aria-hidden="true">
+              {% endif %}
+              </a>
+            </td>
+            {% endif %}
+            {% endfor %}
+            </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+  function add_circle() {
+    $('#name').val('');
+
+    $('#addCircle').modal();
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,126 @@
+
+/*
+ * Copyright 2016 The COMPEIT Consortium
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* COMPEIT CSS */
+/* should be split into functional parts */
+
+div.avContainer {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image    : url('../img/guestoctopus.jpg');
+    /*padding: 0px;*/
+}
+
+.ui-widget  {
+    width               : 100%;
+    height              : auto;
+    max-width           : 1120px;
+    max-height          : 192000px;
+    min-height          : 100%;
+    background-color    : #CCCCCC;
+    position            : relative;
+    margin-left         : auto;
+    margin-right        : auto;
+    padding             : 0px;
+    }
+
+
+
+div#videoContainer{
+    background-repeat   : repeat;
+    background-image    : url('../img/guestoctopus.jpg');
+    z-index             : 10;
+    position            : relative ;
+    width               : 100%;
+    height              : 120px;
+    max-width           : 1118px;
+    max-height          : 120px;
+    margin-left         : auto;
+    margin-right        : auto;
+    min-height          : 0px;
+    border              : solid 1px;
+    }
+
+div#addressBookContainer{
+    background-color    : darkSlateGray;
+    z-index             : 100;
+    overflow            : hidden;
+    position            : absolute;
+    width               : 120px;
+    height              : 120px;
+    max-width           : 120px;
+    max-height          : 480px;
+    color               : lightBlue;
+    top                 : 50px;
+    left                : 0px;
+    }
+
+
+
+div#content,
+div#content2,
+div#localKinectColorView,
+div#remoteKinectMainView,
+div#remoteKinectDepthView{
+    z-index             : 20;
+    overflow            : hidden;
+    position            : absolute;
+    width               : 640px;
+    height              : 480px;
+    max-width           : 640px;
+    max-height          : 480px;
+    color               : lightBlue;
+    }
+
+
+
+.streamImageCanvas {
+    position            : absolute;
+    width               : 160px;
+    height              : 160px;
+    left                : 0.0;
+    top                 : 0.0;
+    opacity             : 0.0;
+    border              : 1px solid red;
+    transition          : opacity 1.0s;
+    }
+
+input.privacy{
+    display: none;
+    width: 50px;
+    height: 50px;
+    }
+
+label.privacy {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    background-image: url(../IMG/cross.png);
+    background-size: 50px 50px;
+    }
+
+input.privacy:checked + label.privacy {
+    background-image: url(../IMG/check.png);
+    }
+
+
+#log-container {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}

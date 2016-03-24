@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<title>COMPEIT: Privacy settings v0.1: O</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="author" content="Harold T Nefs, Iulia Lefter">
+    <meta name="keywords" content="COMPEIT, Mocktopus, Privacy">
+    <meta name="description" content="Mocktopus: privacy settings">
+    <title>Privacy settings v0.1</title>
+    
+	<script type="text/javascript" src="../JS/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="../jquery-ui-1.10.4.custom/js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="../jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
+	<script type="text/javascript" src="../JS/adapter.js"></script>
+
+    <link rel="icon"  type="image/gif" href="../IMG/favicon.ico" sizes="32x32" >
+    
+    <link rel="stylesheet" type="text/css" href="../jquery-ui-1.10.4.custom/css/no-theme/jquery-ui-1.10.4.custom.css" > 
+    <link rel="stylesheet" type="text/css" href="../CSS/compeit.css">
+    <link rel="stylesheet" href="http://static-cdn3.webnode.com/_system/skins/v7/50001073/css/style.css">
+</head>
+
+  
+<body>
+<div id="header" >
+		<H1>Privacy settings</H1>		
+    </div>
+    
+	<div id = "videoContainer" class = "ui-widget" align ="left"></div> 
+    
+    <div id = "container" class= "ui-widget">
+
+<div align="right">
+<a href="IA_v0.1.html"> Back to Sneak Peek</a> 
+</div>
+<div align="middle">
+<h1>Who can see my stuff? </h1>
+</div>
+
+<div align="middle">
+<table  align="center" border="0" cellspacing="0" cellpadding="2">
+  <tr align="center">
+    <td width="100"></td>
+    <td width="100"> My agenda </td>
+    <td width="100">My location   </td>
+    <td width="100">My mood  </td>
+    <td width="100">My photos  </td>
+  </tr>
+  <tr align="center">
+    <td>Family</td>
+    <td> <a/>
+        <img src="images/check.png" id="changer" onclick="changeImage(this)" width="50" height="50" />
+        </a></td>
+    <td> <a/>
+        <img src="images/check.png" id="changer" onclick="changeImage(this)" width="50" height="50" />
+        </a></td>
+    <td> <a/>
+        <img src="images/check.png" id="changer" onclick="changeImage(this)" width="50" height="50" />
+        </a></td>
+    <td> <a/>
+        <img src="images/check.png" id="changer" onclick="changeImage(this)" width="50" height="50" />
+        </a></td>
+  </tr>
+  <tr align="center">
+    <td>Friends</td>
+    <td> <a/>
+        <img src="images/check.png" id="changer" onclick="changeImage(this)" width="50" height="50" />
+        </a></td>
+    <td> <a/>
+        <img src="images/check.png" id="changer" onclick="changeImage(this)" width="50" height="50" />
+        </a></td>
+    <td> <a/>
+        <img src="images/check.png" id="changer" onclick="changeImage(this)" width="50" height="50" />
+        </a></td>
+    <td> <a/>
+        <img src="images/cross.png" id="changer" onclick="changeImage(this)" width="50" height="50" />
+        </a></td>
+  </tr>
+  <tr align="center">
+    <td>Teachers</td>
+    <td>        <a/>
+        <img src="images/check.png" id="changer" onclick="changeImage(this)" width="50" height="50" /></td>
+    <td>        <a/>
+        <img src="images/cross.png" id="changer" onclick="changeImage(this)" width="50" height="50" />
+        </a></td>
+    <td>        <a/>
+        <img src="images/cross.png" id="changer" onclick="changeImage(this)" width="50" height="50" />
+        </a></td>
+    <td>        <a/>
+        <img src="images/cross.png" id="changer" onclick="changeImage(this)" width="50" height="50" />
+        </a></td>
+  </tr>
+  <tr align="center">
+    <td>Students</td>
+    <td>        <a/>
+        <img src="images/check.png" id="changer" onclick="changeImage(this)" width="50" height="50" /></td>
+    <td>        <a/>
+        <img src="images/cross.png" id="changer" onclick="changeImage(this)" width="50" height="50" />
+        </a></td>
+    <td>        <a/>
+        <img src="images/cross.png" id="changer" onclick="changeImage(this)" width="50" height="50" />
+        </a></td>
+    <td>        <a/>
+        <img src="images/cross.png" id="changer" onclick="changeImage(this)" width="50" height="50" />
+        </a></td>
+  </tr>
+    <tr align="center">
+    <td>Medical staff</td>
+    <td>        <a/>
+        <img src="images/check.png" id="changer" onclick="changeImage(this)" width="50" height="50" /></td>
+    <td>        <a/>
+        <img src="images/check.png" id="changer" onclick="changeImage(this)" width="50" height="50" />
+        </a></td>
+    <td>        <a/>
+        <img src="images/cross.png" id="changer" onclick="changeImage(this)" width="50" height="50" />
+        </a></td>
+    <td>        <a/>
+        <img src="images/cross.png" id="changer" onclick="changeImage(this)" width="50" height="50" />
+        </a></td>
+  </tr>
+</table>
+
+</div>
+
+<div class="boxTitle" align="center">
+  <p>&nbsp;</p>
+  <p><a href="IA_v0.1/test2.html">Manage group membership. </a></p> 
+</div>
+
+</body>
+
+
+<script type="text/javascript">
+i=1;
+function changeImage(el) {
+    el.click=++i;
+    el.src = ((el.click)%2 == 0) ? "images/cross.png" : "images/check.png";
+}
+</script>
+
+</html>

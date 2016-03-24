@@ -1,0 +1,128 @@
+
+<!--
+ Copyright 2016 The COMPEIT Consortium
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+
+{% extends "auth/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}COMPEIT Dashboard - Log in{% endblock %}
+
+{% block page_content %}
+<!-- Modal -->
+<div class="modal fade" id="regUser" tabindex="-1" role="dialog" aria-labelledby="regUserLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form class="form" method="post" role="form">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+          </button>
+          <h4 class="modal-title" id="regUserLabel">Register new user</h4>
+        </div>
+        <div class="modal-body">
+          {{ register_form.hidden_tag() }}
+          {{ wtf.form_errors(register_form, hiddens="only") }}
+
+          {% if register_form.errors %}
+          <div class="alert alert-danger" role="alert">
+            <ul class="errors">
+              {% for field_name, field_errors in register_form.errors|dictsort if field_errors %}
+              {% for error in field_errors %}
+              <li>{{ register_form[field_name].label }}: {{ error }}</li>
+              {% endfor %}
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+          <div class="form-group ">
+            {{ register_form.email.label(class_='control-group') }}
+            {{ register_form.email(class_='form-control') }}
+          </div>
+          <div class="form-group ">
+            {{ register_form.name.label(class_='control-group') }}
+            {{ register_form.name(class_='form-control') }}
+          </div>
+          <div class="form-group">
+            {{ register_form.password.label(class_='control-group') }}
+            {{ register_form.password(class_='form-control') }}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button id="save_button" type="submit" class="btn btn-primary" formaction="{{ url_for('auth.register_user') }}">Register</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="browserWarning" class="alert alert-danger hidden">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <h1>Sorry, your browser is not supported!</h1>
+  <strong>
+      At the moment, the only supported browser is <a style="color:black;" href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a>.
+      Support for Google Chrome is coming soon.
+  </strong>
+</div>
+
+<div class="page-header">
+  <h3>Log in</h3>
+</div>
+
+<div class="row">
+  <div class="col-md-6 pull-center">
+    {{ wtf.quick_form(form) }}
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-md-3">
+    <a class="btn btn-warning btn-sm" href="{{ url_for('auth.password_reset_request') }}" role="button">Reset password</a>
+  </div>
+  <div class="col-md-3 pull-right">
+    <button class="btn btn-info btn-sm" onClick="reg_user()">Register new user</button>
+  </div>
+</div>
+<hr>
+<div class="row col-md-12">
+  <p>
+    <br>
+    <strong>Note that this is an early prototype and your user, settings and information may be deleted at any time.</strong>
+    This prototype is provided for piloting purposes and should not be used for activities where errors in its operation would cause significant harm. This service has been produced with the assistance of the European Union. Its functioning is however the sole responsibility of the COMPEIT consortium.
+  </p>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+  function reg_user() {
+    $('#name').val('');
+    $('#email').val('');
+    $('#password').val('');
+
+    $('#regUser').modal();
+  }
+</script>
+
+<script type="text/javascript" src="/static/vendor/adapter.js"></script>
+<script type="text/javascript">
+  if (webrtcDetectedBrowser !== 'firefox') {
+      $('#browserWarning').removeClass('hidden');
+  }
+</script>
+{% endblock %}

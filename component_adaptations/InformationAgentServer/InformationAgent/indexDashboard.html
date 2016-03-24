@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Information Agent</title>
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="css/lumen.min.css">
+</head>
+<body>
+  <div class="col-md-5">
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingThree">
+          <h5 class="panel-title">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseZero" aria-expanded="false" aria-controls="collapseZero">
+              My video
+            </a>
+          </h5>
+        </div>
+        <div id="collapseZero" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            <!--myVideo-->
+            <p class="text-center"><span id="videoContainer"></span></p>
+            <!--/myVideo-->
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne">
+          <h5 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              My current mood
+            </a>
+          </h5>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            <!--MyMood-->
+            <div  id = "myMood">
+              <div id='affectButton' data-role="page" style="height: 200px; min-height: 200px !important; width: 50%; position : relative">
+                  <div data-role="content" style="width:300px; height:200px; margin:auto auto;">
+                    <div style="padding:0; width:262px; height:100px; margin:0 ;">
+                      <p class="text-center">
+                        <canvas id="affect" width="100px" height="100px" style="border:0; padding:0;"></canvas>
+                      </p>
+                      <div data-role="fieldcontain">
+                        <p class="text-center">
+                          <label for="pleasure">pleased</label>
+                          <input id="pleasure" type="number" value="0" min="-1" max="1" step="0.05" size="4" />
+                          <label for="arousal">aroused</label>
+                          <input id="arousal" type="number" value="0" min="-1" max="1" step="0.05" />
+                          <label for="dominance">dominant</label>
+                          <input id="dominance" type="number" value="0" min="-1"max="1" step="0.05" />  
+                        </p>
+                      </div>
+                  </div>
+                </div> <!--  /content -->
+              </div> <!-- /affectButton -->
+              <!-- Sound recorder --> 
+              <p class="text-center">
+                <audio id = "audioplayer" controls autoplay></audio>
+                <fieldset>
+                  <h6>RECORD AUDIO</h6>
+                  <input class="btn" onclick="takeSnapSoundNow()" type="button" value="make snapSound" />
+                  <input class="btn" onclick="playLastSnapSoundNow()" type="button" value="play last recording" />
+                </fieldset>
+              </p>   
+            </div> 
+            <!--/myMood-->
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingTwo">
+          <h5 class="panel-title">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              My current activity
+            </a>
+          </h5>
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            <!--MyActivities-->
+            <div id="myActivities">
+              <div class="row text-center"> 
+                  <img class="img-thumbnail" id="currentActivityIcon" src="../IMG/activity/play.png" width="150px">
+              </div>
+              <div class="row text-center"> 
+                <img src="../IMG/activity/play.png" width="40" onClick = "swap(event)">
+                <img src="../IMG/activity/awake.png" width="40" onClick = "swap(event)">
+                <img src="../IMG/activity/doc.png" width="40" onClick = "swap(event)">
+                <img src="../IMG/activity/eat.png" width="40" onClick = "swap(event)">
+                <img src="../IMG/activity/parents.png" width="40" onClick = "swap(event)">
+                <img src="../IMG/activity/shower.png" width="40" onClick = "swap(event)">
+                <img src="../IMG//activity/sleep.png" width="40" onClick = "swap(event)">
+                <img src="../IMG//activity/study.png" width="40" onClick = "swap(event)">
+              </div>
+            </div>
+            <!--/MyActivities-->
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingThree">
+          <h5 class="panel-title">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+              Browse my screenshots
+            </a>
+          </h5>
+        </div>
+        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            <!--mySnapshots-->
+            <div id="mySnapShots">
+              <div id="snapShotBrowser" class="row"></div>
+              <div class="row text-center">
+                <input class="btn" onclick="takeSnapShotNow()" type="button" value="Take a snapshot!" />
+              </div>
+            </div>
+            <!--/mySnapshots-->
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingFour">
+          <h5 class="panel-title">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+              My location
+            </a>
+          </h5>
+        </div>
+        <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+          <div class="panel-body">
+            <!--my Location-->
+            <div id="myLocation">
+              <div id="map-canvas" class="well text-center" style = "width: 300px; height: 200px"></div>
+            </div>
+            <!--/myLocation-->
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingFive">
+          <h5 class="panel-title">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+              Who can see my stuff?
+            </a>
+          </h5>
+        </div>
+        <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+          <div class="panel-body">
+            <!--MyPrivacySettings-->
+            <div id="privacySettings" >
+              <table  align="center" border="0" cellspacing="0" cellpadding="2">
+                <tr>
+                  <td width="100"></td>
+                  <td width="100">My agenda</td>
+                  <td width="100">My location</td>
+                  <td width="100">My mood</td>
+                  <td width="100">My photos</td>
+                </tr>
+                <tr>
+                  <td>Family</td>
+                  <td><input type = "checkbox" class = "privacy" id = "family.myAgenda"/><label  for = "family.myAgenda" class ="privacy"> </label></td>
+                  <td><input type = "checkbox" class = "privacy" id = "family.myLocation"/><label  for = "family.myLocation" class ="privacy"> </label></td>
+                  <td><input type = "checkbox" class = "privacy" id = "family.myMood"/><label  for = "family.myMood" class ="privacy"> </label></td>
+                  <td><input type = "checkbox" class = "privacy" id = "family.myPhotos"/><label  for = "family.myPhotos" class ="privacy"> </label></td>
+                </tr>
+                <tr>
+                  <td>Friends</td>
+                  <td><input type = "checkbox" class = "privacy" id = "friends.myAgenda"/><label  for = "friends.myAgenda" class ="privacy"> </label></td>
+                  <td><input type = "checkbox" class = "privacy" id = "friends.myLocation"/><label  for = "friends.myLocation" class ="privacy"> </label></td>
+                  <td><input type = "checkbox" class = "privacy" id = "friends.myMood"/><label  for = "friends.myMood" class ="privacy"> </label></td>
+                  <td><input type = "checkbox" class = "privacy" id = "friends.myPhotos"/><label  for = "friends.myPhotos" class ="privacy"> </label></td>
+                </tr>
+
+                <tr>
+                  <td>Teachers</td>
+                  <td><input type = "checkbox" class = "privacy" id = "teachers.myAgenda"/><label  for = "teachers.myAgenda" class ="privacy"> </label></td>
+                  <td><input type = "checkbox" class = "privacy" id = "teachers.myLocation"/><label  for = "teachers.myLocation" class ="privacy"> </label></td>
+                  <td><input type = "checkbox" class = "privacy" id = "teachers.myMood"/><label  for = "teachers.myMood" class ="privacy"> </label></td>
+                  <td><input type = "checkbox" class = "privacy" id = "teachers.myPhotos"/><label  for = "teachers.myPhotos" class ="privacy"> </label></td>
+                </tr>
+                <tr>
+                  <td>Students</td>
+                  <td><input type = "checkbox" class = "privacy" id = "students.myAgenda"/><label  for = "students.myAgenda" class ="privacy"> </label></td>
+                  <td><input type = "checkbox" class = "privacy" id = "students.myLocation"/><label  for = "students.myLocation" class ="privacy"> </label></td>
+                  <td><input type = "checkbox" class = "privacy" id = "students.myMood"/><label  for = "students.myMood" class ="privacy"> </label></td>
+                  <td><input type = "checkbox" class = "privacy" id = "students.myPhotos"/><label  for = "students.myPhotos" class ="privacy"> </label></td>
+                </tr>
+                <tr>
+                  <td>Medical staff</td>
+                  <td><input type = "checkbox" class = "privacy" id = "medstaff.myAgenda"/><label  for = "medstaff.myAgenda" class ="privacy"> </label></td>
+                  <td><input type = "checkbox" class = "privacy" id = "medstaff.myLocation"/><label  for = "medstaff.myLocation" class ="privacy"> </label></td>
+                  <td><input type = "checkbox" class = "privacy" id = "medstaff.myMood"/><label  for = "medstaff.myMood" class ="privacy"> </label></td>
+                  <td><input type = "checkbox" class = "privacy" id = "medstaff.myPhotos"/><label  for = "medstaff.myPhotos" class ="privacy"> </label></td>
+                </tr>
+              </table>
+            </div>
+            <!--/MyPrivacySettings-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ8jMz8K0WORaIcwrBlqm829SShbnTQds"></script>
+  <script type="text/javascript" src="../jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
+  <script type="text/javascript" src="../JS/adapter.js"></script>
+  <script type="text/javascript" src="JS/recorder.js"> </script>
+  <script type="text/javascript" src="JS/InformationAgent.js"></script>
+  <script type="text/javascript" src="JS/mainDashboard.js"></script>
+  <script type="text/javascript" src="JS/jquery.ui.affectbutton.js"></script>
+  <script type="text/javascript">
+
+    <!--overide these functions in the demo object-->
+    takeSnapSoundNow                = function(){};
+    takeSnapShotNow                 = function(){};
+    playLastSnapSoundNow    = function(){};
+    changePrivacyHandler    = function(){};
+
+
+    <!--location--> 
+    var map, mapOptions;
+    function loadMap() {
+      mapOptions = {
+        center: new google.maps.LatLng(-34.397, 150.644),
+        zoom: 12
+      };
+      map = new google.maps.Map(document.getElementById("map-canvas"),mapOptions);
+    }
+    
+    google.maps.event.addDomListener(window, 'load', loadMap);
+
+    <!--Activity selector-->
+    function swap(event) {
+      document.getElementById("currentActivityIcon").src = event.target.src;
+    };
+
+    $("input.privacy").click(function(){
+      changePrivacyHandler(this);
+    });
+
+    var parseQueryString = function() {
+      var str = window.location.search;
+      var objURL = {};
+
+      str.replace(
+        new RegExp( "([^?=&]+)(=([^&]*))?", "g" ),
+                     function( $0, $1, $2, $3 ){
+                     objURL[ $1 ] = $3;
+                     }
+                  );
+        return objURL;
+      };
+
+    $(document).ready(function () {
+      var params              = parseQueryString(); 
+      var demo = new Demo(params['storage_location']?params['storage_location']:'59492717');
+
+      changePrivacyHandler    = demo.changePrivacySetting;
+      takeSnapSoundNow                = demo.takeSnapSoundNow;
+      takeSnapShotNow                 = demo.takeSnapShotNow;
+      playLastSnapSoundNow    = demo.playLastSnapSoundNow;
+
+
+      $('#affectButton').find('#affect').affectbutton({
+      }).bind('affectchanged', function(e, a) {
+                                // ... so we can update the input element of each component
+                                $.each(a, function(c, v) {
+                                  $('#' + c).val(v);
+                                });
+                              });
+
+      $('#affectButton').find('#pleasure, #arousal, #dominance').each(
+        function(index,elem){
+          $(this).bind('change', function(){
+            v= $(this).val();
+
+            if (v) {
+              $('#affect').affectbutton('affect', this.id, v);
+            }
+          })
+        }
+        );
+      });
+  </script>
+</body>
+</html>

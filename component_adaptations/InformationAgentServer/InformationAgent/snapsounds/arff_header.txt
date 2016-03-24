@@ -1,0 +1,34 @@
+@relation praatFeat_a3pt.arff
+@attribute t1 real
+@attribute t2 real
+@attribute t3 real
+@attribute t4 real
+@attribute t5 real
+@attribute t6 real
+@attribute t7 real
+@attribute t8 real
+@attribute t9 real
+@attribute t10 real
+@attribute t11 real
+@attribute t12 real
+@attribute t13 real
+@attribute t14 real
+@attribute t15 real
+@attribute t16 real
+@attribute t17 real
+@attribute t18 real
+@attribute t19 real
+@attribute t20 real
+@attribute t21 real
+@attribute t22 real
+@attribute t23 real
+@attribute t24 real
+@attribute t25 real
+@attribute t26 real
+@attribute t27 real
+@attribute t28 real
+@attribute t29 real
+@attribute t30 real
+@attribute t31 real
+@attribute class { 1 2 3}
+@data

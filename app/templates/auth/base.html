@@ -1,0 +1,77 @@
+
+<!--
+ Copyright 2016 The COMPEIT Consortium
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+
+{% extends "bootstrap/base.html" %}
+
+{% block styles %}
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <!-- Bootstrap -->
+    <link href="{{ url_for('static', filename='vendor/lumen.min.css') }}" rel="stylesheet" media="screen">
+    <link href="{{ url_for('static', filename='vendor/sticky-footer-navbar.css') }}" rel="stylesheet" media="screen">
+ {% endblock %}
+
+{% block title %}COMPEIT Server{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-default" role="navigation">
+    <div class="navbar-header">
+        <div class="navbar-brand">
+            <img style="margin-top:-6px; height:32px; width:auto;" src="/static/img/COMPEIT-logo-CMYK.svg"></img>
+        </div>
+    </div>
+
+    <div class="navbar" style="position: absolute; width: 100%;left: 0; text-align: center; margin: auto;">
+      <h3 style="color: DarkSlateGray; margin-top: 13px;">COMPEIT Server</h3>
+    </div>
+
+    {% if current_user.is_authenticated() %}
+    <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="{{ url_for('auth.logout') }}">
+                    Log out
+                </a>
+            </li>
+        </ul>
+    </div>
+    {% endif %}
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  {% for category, message in get_flashed_messages(with_categories=true) %}
+  <div class="alert alert-warning">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    {% if category=='error' %}
+    <strong>
+      {% endif %}
+      {{ message }}
+      {% if category=='error' %}
+    </strong>
+    {% endif %}
+  </div>
+  {% endfor %}
+  {% block page_content %}{% endblock %}
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p class="text-muted">&copy;2014-2015 COMPEIT Consortium, <a href="http://www.compeit.eu">www.compeit.eu</a></p>
+  </div>
+</footer>
+{% endblock %}

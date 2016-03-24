@@ -1,0 +1,13 @@
+Dear {{ user.name }},
+
+Welcome to the COMPEIT connected media and presence service!!
+
+To confirm your account please click on the following link:
+
+{{ url_for('auth.confirm', token=token, _external=True) }}
+
+Sincerely,
+
+The COMPEIT Team
+
+Note that this prototype is provided for piloting purposes and should not be used for activities where errors in its operation would cause significant harm. This service has been produced with the assistance of the European Union. Its functioning is however the sole responsibility of the COMPEIT consortium.

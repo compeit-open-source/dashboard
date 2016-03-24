@@ -1,0 +1,124 @@
+
+<!--
+ Copyright 2016 The COMPEIT Consortium
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+
+{% extends "admin/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Objects{% endblock %}
+{% block page_title %}Admin Objects{% endblock %}
+
+{% block page_content %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Objects</h3>
+  </div>
+  <div class="panel-body">
+    <table class="table table-striped">
+      <thead>
+	<tr>
+    <th>Id</th>
+	  <th>Name</th>
+	  <th>Description</th>
+    <th>Token</th>
+	  <th>Icon</th>
+    <th>Input</th>
+    <th>Output</th>
+    <th>Value</th>
+	</tr>
+      </thead>
+      <tbody>
+	{% for object in objects %}
+	<tr>
+    <td>{{ object.id }}</td>
+	  <td>{{ object.name }}</td>
+	  <td>{{ object.description }}</td>
+    <td>{{ object.token }}</td>
+    <td>{{ object.icon }}</td>
+    {% if object.inputs.all()|length > 0 %}
+    {% for input in object.inputs.all() %}
+      <td>{{ input.name }}</td>
+    {% endfor %}
+    {% else %}
+      <td></td>
+    {% endif %}
+    {% if object.outputs.all()|length > 0 %}
+    {% for output in object.outputs.all() %}
+    {% if loop.first %}
+    <td>{{ output.name }}</td><td>{{ output.value }}</td></tr>
+    {% else %}
+    <td></td><td></td><td></td><td></td><td></td>
+    <td>{{ output.name }}</td><td>{{ output.value }}</td></tr>
+    {% endif %}
+    {% endfor %}
+    {% else %}
+      <td></td><td></td></tr>
+    {% endif %}
+	{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Authorization</h3>
+  </div>
+  <div class="panel-body">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Object</th>
+          {% for circle in circles %}
+          <th class="text-center">{{ circle.name }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+          {% for caa in authorizations %}
+          <tr>
+            {% for ca in caa %}
+            {% if loop.first %}
+            <td>{{ ca[2] }}</td>
+            {% else %}
+            <td class="text-center">
+              {% if ca[2] %}
+              {% if ca[2] == 1 %}
+              <span class="glyphicon glyphicon-export" aria-hidden="true">
+              <span class="glyphicon glyphicon-ban-circle" aria-hidden="true">
+              {% endif %}
+              {% if ca[2] == 2 %}
+              <span class="glyphicon glyphicon-ban-circle" aria-hidden="true">
+              <span class="glyphicon glyphicon-import" aria-hidden="true">
+              {% endif %}
+              {% if ca[2] == 3 %}
+              <span class="glyphicon glyphicon-export" aria-hidden="true">
+              <span class="glyphicon glyphicon-import" aria-hidden="true">
+              {% endif %}
+              {% else %}
+              <span class="glyphicon glyphicon-ban-circle" aria-hidden="true">
+              <span class="glyphicon glyphicon-ban-circle" aria-hidden="true">
+              {% endif %}
+            </td>
+            {% endif %}
+            {% endfor %}
+            </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
